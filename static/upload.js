@@ -12,6 +12,7 @@ YUI().use('uploader', function (Y) {
 		var form = Y.one('form');
 		var submitBtn = form.one('input[type=submit]');
 		var descArea = form.one('textarea');
+		var cancelLink = Y.one("#submitcancel a");
 		var uploading = false;   // is a file being uploaded?
 		var autosubmit = false;  // did the user want to submit the form?
 
@@ -33,6 +34,15 @@ YUI().use('uploader', function (Y) {
 			submitBtn.set('disabled', true);
 			descArea.set('disabled', true);
 			submitBtn.set('value', 'Waiting for the upload to finish...')
+			cancelLink.show();
+		}
+
+		function cancelDeferredFormSubmit(){
+			autosubmit = false;
+			submitBtn.set('disabled', false);
+			descArea.set('disabled', false);
+			submitBtn.set('value', 'Save')
+			cancelLink.hide();
 		}
 
 		// call when the upload is completed
@@ -62,8 +72,12 @@ YUI().use('uploader', function (Y) {
 
 		// upload progress monitoring
 		uploader.on("totaluploadprogress", function (event) {
-			Y.one("#overallProgress").setHTML(
-				"Total uploaded: <strong>" + event.percentLoaded + "%</strong");
+			var html = "Total uploaded: <strong>" + event.percentLoaded + "%</strong>";
+			if (event.percentLoaded == 100){
+				// at this point, the server is copying the uploaded file
+				html += ". Please wait...";
+			}
+			Y.one("#overallProgress").setHTML(html);
 		});
 
 		// when upload completes, server sends a uuid for the uploaded file
@@ -79,5 +93,10 @@ YUI().use('uploader', function (Y) {
 				deferFormSubmit();
 			}
 		})
+
+		cancelLink.on('click', function (event){
+			cancelDeferredFormSubmit();
+			event.preventDefault();
+		});
 	}
 })
