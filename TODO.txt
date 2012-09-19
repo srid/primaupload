@@ -1,10 +1,11 @@
-* javascript ajax upload?
-* ajax fetch of /progress during upload?
-  * in go?
-* test in ie7 and greater
+* goroutine for concurrent upload
+* test in ie7 (work)
 
 work log
 ===
 * ajax file upload
 * ajax file upload ie7
 * :-( http://caniuse.com/xhr2
+* better use YUI; iframe hack may take much time
+* go for fun
+* 
