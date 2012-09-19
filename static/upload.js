@@ -30,6 +30,9 @@ YUI().use('uploader', function (Y) {
 		// save this for later submit
 		uploader.on("uploadcomplete", function (event){
 			Y.one("#serverdata a").set('href', event.data);
+			// add the uploaded file path to the form, that is about to be saved.
+			// this allows the server to link the description with the file.
+			Y.one("#savedfile").set('value', event.data);
 			Y.one("#serverdata").show();
 			Y.one("#overallProgress").hide();
 		})

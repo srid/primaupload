@@ -47,11 +47,22 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	fmt.Fprintln(w, "/"+targetPath)
+	fmt.Fprintf(w, "/"+targetPath)
+}
+
+func SaveHandler(w http.ResponseWriter, r *http.Request) {
+	path := r.FormValue("savedfile")
+	description := r.FormValue("description")
+	t, _ := template.ParseFiles("view.html")
+	t.Execute(w, map[string]string{
+		"Title":       "My title",
+		"Path":        path,
+		"Description": description})
 }
 
 func ConfigureRoutes() {
 	http.HandleFunc("/", HomeHandler)
+	http.HandleFunc("/save", SaveHandler)
 
 	// static directory handler
 	staticDir, err := filepath.Abs("./static")
