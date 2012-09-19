@@ -8,7 +8,17 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
+
+func appendUuidToFilepath(path string) string {
+	id, _ := uuid.NewV4()
+	return fmt.Sprintf("%s-%s", id, path)
+}
+
+func removeUuidFromFilepath(path string) string {
+	return strings.SplitN(filepath.Base(path), "-", 6)[5]
+}
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
@@ -28,9 +38,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// use a UUID in the filename to avoid conflicts
-	id, _ := uuid.NewV4()
-	targetPath := filepath.Join(
-		"static", "uploads", fmt.Sprintf("%s-%s", id, handler.Filename))
+	targetPath := filepath.Join("static", "uploads", appendUuidToFilepath(handler.Filename))
 
 	target, err := os.OpenFile(targetPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -55,7 +63,7 @@ func SaveHandler(w http.ResponseWriter, r *http.Request) {
 	description := r.FormValue("description")
 	t := template.Must(template.ParseFiles("view.html"))
 	t.Execute(w, map[string]string{
-		"Title":       "My title",
+		"Title":       removeUuidFromFilepath(path),
 		"Path":        path,
 		"Description": description})
 }
