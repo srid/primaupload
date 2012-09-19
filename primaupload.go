@@ -9,12 +9,16 @@ import (
 )
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		UploadHandler(w, r)
+	}
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, nil)
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	file, handler, err := r.FormFile("file")
+	yuiUploadKey := "Filedata" // scraped from chrome dev tools
+	file, handler, err := r.FormFile(yuiUploadKey)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -29,6 +33,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// TODO: use UUID to avoid conflicts, but store title?
 	targetPath := filepath.Join("uploads", handler.Filename)
+	fmt.Printf("copying to %s\n", targetPath)
 	err = ioutil.WriteFile(targetPath, data, 0777)
 	if err != nil {
 		fmt.Println(err)
@@ -37,7 +42,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 func ConfigureRoutes() {
 	http.HandleFunc("/", HomeHandler)
-	http.HandleFunc("/upload", UploadHandler)
 
 	// static directory handler
 	staticDir, err := filepath.Abs("./static")
