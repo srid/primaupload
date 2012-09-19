@@ -29,7 +29,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// use a UUID in the filename to avoid conflicts
 	id, _ := uuid.NewV4()
-	targetPath := filepath.Join("uploads", fmt.Sprintf("%s-%s", id, handler.Filename))
+	targetPath := filepath.Join(
+		"static", "uploads", fmt.Sprintf("%s-%s", id, handler.Filename))
 
 	target, err := os.OpenFile(targetPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -46,7 +47,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	fmt.Fprintln(w, targetPath)
+	fmt.Fprintln(w, "/"+targetPath)
 }
 
 func ConfigureRoutes() {

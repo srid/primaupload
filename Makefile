@@ -10,4 +10,4 @@ fmt:
 		gofmt -w primaupload.go
 
 clean:
-		rm -f uploads/*
+		rm -f static/uploads/*
