@@ -14,13 +14,22 @@
 	<h1>PrimaUpload</h1>
 
 	<div>
-		<div id="myUploader">
+		<div id="myUploader" style="float:">
 		</div>
 		<div id="overallProgress" style="display: none;">
 		</div>
 		<div id="serverdata" style="display: none;">
 			<a href="">Uploaded to here.</a>
 		</div>
+
+		<form method="POST" action="/">
+			<input type="hidden" id="savedfile" value="" />
+			
+			<label for="description">Description</a><br/>
+			<textarea name="description"></textarea>
+			<br/>
+			<input id="submitbutton" type="submit" value="Save" />
+		</form>
 	</div>
 
   	<script src="/static/upload.js"></script>

@@ -15,13 +15,16 @@ YUI().use('uploader', function (Y) {
 			uploader.uploadAll();
 		})
 
+		uploader.on("uploadstart", function(event) {
+			Y.one("#overallProgress").show();
+			Y.one("#serverdata").hide();
+		})
+
 		// upload progress monitoring
-		uploader.on("totaluploadprogress", reportProgress);
-		function reportProgress (event) {
-			Y.one("#overallProgress").show();			
+		uploader.on("totaluploadprogress", function (event) {
 			Y.one("#overallProgress").setHTML(
 				"Total uploaded: <strong>" + event.percentLoaded + "%</strong");
-		}
+		});
 
 		// when upload completes, server sends a uuid for the uploaded file
 		// save this for later submit
