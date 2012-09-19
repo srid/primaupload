@@ -15,13 +15,12 @@ YUI().use('uploader', function (Y) {
 		var form = Y.one('form');
 		var submitBtn = form.one('input[type=submit]');
 		var descArea = form.one('textarea');
-		var cancelLink = Y.one("#submitcancel a");
+		var cancelSubmitLink = Y.one("#submitcancel a");
 		var uploading = false;   // is a file being uploaded?
 		var autosubmit = false;  // did the user want to submit the form?
 
 		// clear and initializing state of elements
 		function clear(){
-			uploading = true;
 			autosubmit = false;
 			submitBtn.set('value', 'Save');
 			submitBtn.set('disabled', false);
@@ -37,15 +36,15 @@ YUI().use('uploader', function (Y) {
 			submitBtn.set('disabled', true);
 			descArea.set('disabled', true);
 			submitBtn.set('value', 'Waiting for the upload to finish...')
-			cancelLink.show();
+			cancelSubmitLink.show();
 		}
 
 		function cancelDeferredFormSubmit(){
 			autosubmit = false;
 			submitBtn.set('disabled', false);
 			descArea.set('disabled', false);
-			submitBtn.set('value', 'Save')
-			cancelLink.hide();
+			submitBtn.set('value', 'Save');
+			cancelSubmitLink.hide();
 		}
 
 		// call when the upload is completed
@@ -60,21 +59,24 @@ YUI().use('uploader', function (Y) {
 			if (autosubmit){
 				submitBtn.set('value', 'Submitting...')
 				form.submit()
-			}			
+			}else{
+				submitBtn.set('disabled', false);
+			}		
 		}
 
 		// once a file is selected, begin uploading
 		uploader.after("fileselect", function (event){
-			clear();
-			uploader.uploadAll();
+			clear()
+			uploading = true;
+			uploader.upload(event.fileList[0], '/upload');
 		})
 
-		uploader.on("uploadstart", function(event) {
+		uploader.on("fileuploadstart", function (event) {
 			Y.one("#overallProgress").show();
 		})
 
 		// upload progress monitoring
-		uploader.on("totaluploadprogress", function (event) {
+		uploader.on("uploadprogress", function (event) {
 			var html = "Total uploaded: <strong>" + event.percentLoaded + "%</strong>";
 			if (event.percentLoaded == 100){
 				// at this point, the server is copying the uploaded file
@@ -86,6 +88,7 @@ YUI().use('uploader', function (Y) {
 		// when upload completes, server sends a uuid for the uploaded file
 		// save this for later submit
 		uploader.on("uploadcomplete", function (event){
+			Y.log(event.data);
 			uploadComplete(event.data);
 		})
 
@@ -97,7 +100,7 @@ YUI().use('uploader', function (Y) {
 			}
 		})
 
-		cancelLink.on('click', function (event){
+		cancelSubmitLink.on('click', function (event){
 			cancelDeferredFormSubmit();
 			event.preventDefault();
 		});
