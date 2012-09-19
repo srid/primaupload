@@ -24,7 +24,7 @@ func removeUuidFromFilepath(path string) string {
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Request from", r)
 	if r.Method == "POST" {
-		UploadHandler(w, r)
+		SaveHandler(w, r)
 		return
 	}
 	t := template.Must(template.ParseFiles("index.html"))
@@ -32,8 +32,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	yuiUploadKey := "Filedata" // scraped from chrome dev tools
-	file, handler, err := r.FormFile(yuiUploadKey)
+	file, handler, err := r.FormFile("Filedata")
 	if err != nil {
 		log.Println(err)
 		return
@@ -76,7 +75,7 @@ func SaveHandler(w http.ResponseWriter, r *http.Request) {
 
 func ConfigureRoutes() {
 	http.HandleFunc("/", HomeHandler)
-	http.HandleFunc("/save", SaveHandler)
+	http.HandleFunc("/upload", UploadHandler)
 
 	// static directory handler
 	staticDir, err := filepath.Abs("./static")

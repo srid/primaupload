@@ -1,6 +1,5 @@
 * test in ie7 (work)
 * 404/500 page
-* clicking on 'save' should not submit until download is complete
 * heroku has no persistent filesystem; use ec2? (with added advantage of scalability)
 
 # work log
@@ -12,3 +11,4 @@
 * go for fun
 * uuid 
 * heroku
+* similar to soundcloud's upload page

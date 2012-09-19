@@ -7,6 +7,9 @@ YUI().use('uploader', function (Y) {
 			width:  "120px",
 			height: "40px",
 			multipleFiles: false,
+			fileFieldName: "Filedata",
+			uploadURL: "/upload",
+			selectButtonLabel: "Select File"
 		}).render("#myUploader");
 
 		var form = Y.one('form');
