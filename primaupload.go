@@ -15,7 +15,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		UploadHandler(w, r)
 		return
 	}
-	t, _ := template.ParseFiles("index.html")
+	t := template.Must(template.ParseFiles("index.html"))
 	t.Execute(w, nil)
 }
 
@@ -53,7 +53,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 func SaveHandler(w http.ResponseWriter, r *http.Request) {
 	path := r.FormValue("savedfile")
 	description := r.FormValue("description")
-	t, _ := template.ParseFiles("view.html")
+	t := template.Must(template.ParseFiles("view.html"))
 	t.Execute(w, map[string]string{
 		"Title":       "My title",
 		"Path":        path,
