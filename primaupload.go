@@ -13,6 +13,10 @@ import (
 	"strings"
 )
 
+// maps filename to description
+// ideally, description should be stored in a database
+var descriptionMap = map[string]string{}
+
 func appendUuidToFilepath(path string) string {
 	id, _ := uuid.NewV4()
 	return fmt.Sprintf("%s-%s", id, path)
@@ -61,23 +65,35 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveHandler(w http.ResponseWriter, r *http.Request) {
-	path := r.FormValue("savedfile")
+	path := filepath.Base(r.FormValue("savedfile"))
 	description := r.FormValue("description")
 	if path == "" {
 		log.Println("error: request did not contain path to uploaded file; submitted before upload completion?")
 		return
 	}
-	t := template.Must(template.ParseFiles("view.html"))
-	t.Execute(w, map[string]string{
-		"Title":       removeUuidFromFilepath(path),
-		"Path":        path,
-		"Description": description})
+	descriptionMap[path] = description
+	http.Redirect(w, r, "/view/"+path, http.StatusFound)
+}
+
+func FileInfoHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	filename := vars["filename"]
+	if desc, ok := descriptionMap[filename]; ok {
+		t := template.Must(template.ParseFiles("view.html"))
+		t.Execute(w, map[string]string{
+			"Title":       removeUuidFromFilepath(filename),
+			"Path":        fmt.Sprintf("/static/uploads/%s", filename),
+			"Description": desc})
+	} else {
+		http.NotFound(w, r)
+	}
 }
 
 func ConfigureRoutes() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", HomeHandler)
 	router.HandleFunc("/upload", UploadHandler)
+	router.HandleFunc("/view/{filename}", FileInfoHandler)
 
 	// static directory handler
 	staticDir, err := filepath.Abs("./static")
@@ -85,7 +101,7 @@ func ConfigureRoutes() {
 		panic(err)
 	}
 	staticHandler := http.FileServer(http.Dir(staticDir))
-	router.Handle("/static/", http.StripPrefix("/static", staticHandler))
+	http.Handle("/static/", http.StripPrefix("/static", staticHandler))
 	http.Handle("/", router)
 }
 

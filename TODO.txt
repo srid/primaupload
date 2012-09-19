@@ -1,7 +1,6 @@
 * test in ie7 (work)
 * 404/500 page
 * heroku has no persistent filesystem; use ec2? (with added advantage of scalability)
-* permalink for uploaded files
 * cleanup code
 * write README and publish to github
 
