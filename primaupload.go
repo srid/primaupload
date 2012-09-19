@@ -1,6 +1,7 @@
 package main
 
 import (
+	"code.google.com/p/gorilla/mux"
 	"fmt"
 	"github.com/nu7hatch/gouuid"
 	"html/template"
@@ -74,8 +75,9 @@ func SaveHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ConfigureRoutes() {
-	http.HandleFunc("/", HomeHandler)
-	http.HandleFunc("/upload", UploadHandler)
+	router := mux.NewRouter()
+	router.HandleFunc("/", HomeHandler)
+	router.HandleFunc("/upload", UploadHandler)
 
 	// static directory handler
 	staticDir, err := filepath.Abs("./static")
@@ -83,7 +85,8 @@ func ConfigureRoutes() {
 		panic(err)
 	}
 	staticHandler := http.FileServer(http.Dir(staticDir))
-	http.Handle("/static/", http.StripPrefix("/static", staticHandler))
+	router.Handle("/static/", http.StripPrefix("/static", staticHandler))
+	http.Handle("/", router)
 }
 
 func main() {
