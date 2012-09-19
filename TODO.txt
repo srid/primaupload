@@ -1,5 +1,6 @@
 * goroutine for concurrent upload
 * test in ie7 (work)
+* 404/500 page
 
 work log
 ===

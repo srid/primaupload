@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"net/http"
+	"os"
 	"path/filepath"
 )
 
@@ -24,18 +25,21 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: don't laod into memory
-	data, err := ioutil.ReadAll(file)
+	// TODO: use UUID to avoid conflicts, but store title?
+	targetPath := filepath.Join("uploads", handler.Filename)
+
+	target, err := os.OpenFile(targetPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	defer target.Close()
 
-	// TODO: use UUID to avoid conflicts, but store title?
-	targetPath := filepath.Join("uploads", handler.Filename)
 	fmt.Printf("copying to %s\n", targetPath)
-	err = ioutil.WriteFile(targetPath, data, 0777)
-	if err != nil {
+	n, err := io.Copy(target, file)
+	if err == nil {
+		fmt.Printf("copied %d bytes to %s\n", n, targetPath)
+	} else {
 		fmt.Println(err)
 	}
 }
