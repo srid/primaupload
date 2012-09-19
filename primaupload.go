@@ -63,6 +63,10 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 func SaveHandler(w http.ResponseWriter, r *http.Request) {
 	path := r.FormValue("savedfile")
 	description := r.FormValue("description")
+	if path == "" {
+		log.Println("error: request did not contain path to uploaded file; submitted before upload completion?")
+		return
+	}
 	t := template.Must(template.ParseFiles("view.html"))
 	t.Execute(w, map[string]string{
 		"Title":       removeUuidFromFilepath(path),

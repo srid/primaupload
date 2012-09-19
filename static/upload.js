@@ -10,12 +10,24 @@ YUI().use('uploader', function (Y) {
 			multipleFiles: false,
 		}).render("#myUploader");
 
+		var form = Y.one('form');
+		var submitBtn = form.one('input[type=submit]');
+		var descArea = form.one('textarea');
+		var uploading = false;   // is a file being uploaded?
+		var autosubmit = false;  // did the user want to submit the form?
+
 		// once a file is selected, begin uploading
 		uploader.after("fileselect", function (event){
 			uploader.uploadAll();
 		})
 
 		uploader.on("uploadstart", function(event) {
+			uploading = true;
+			autosubmit = false;
+			submitBtn.set('value', 'Save');
+			submitBtn.set('disabled', false);
+			descArea.set('disabled', false);
+			Y.one("#savedfile").set('value', '');
 			Y.one("#overallProgress").show();
 			Y.one("#serverdata").hide();
 		})
@@ -35,6 +47,26 @@ YUI().use('uploader', function (Y) {
 			Y.one("#savedfile").set('value', event.data);
 			Y.one("#serverdata").show();
 			Y.one("#overallProgress").hide();
+			uploading = false;
+			if (autosubmit){
+				form.submit()
+			}
+		})
+
+		// if the user submits already, wait for the upload to be complete
+		form.on('submit', function (event){
+			Y.log('caudfdf..')
+			Y.log(uploading)
+			if (uploading){
+				Y.log('preventing form submit')
+				event.preventDefault();
+				autosubmit = true;
+				submitBtn.set('disabled', true);
+				descArea.set('disabled', true);
+				submitBtn.set('value', 'Waiting for the upload to finish...')
+			}else{
+				Y.log('allow form submit')
+			}
 		})
 	}
 })
