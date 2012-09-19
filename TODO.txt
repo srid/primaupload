@@ -1,0 +1,10 @@
+* javascript ajax upload?
+* ajax fetch of /progress during upload?
+  * in go?
+* test in ie7 and greater
+
+work log
+===
+* ajax file upload
+* ajax file upload ie7
+* :-( http://caniuse.com/xhr2
