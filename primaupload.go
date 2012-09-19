@@ -82,7 +82,12 @@ func ConfigureRoutes() {
 }
 
 func main() {
-	fmt.Println("Serving http://localhost:8080/")
 	ConfigureRoutes()
-	http.ListenAndServe(":8080", nil)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	} 
+	addr := fmt.Sprintf("0.0.0.0:%s", port)
+	fmt.Printf("Serving http://%s/\n", addr)
+	http.ListenAndServe(addr, nil)
 }

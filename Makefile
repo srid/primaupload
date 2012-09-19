@@ -4,6 +4,13 @@ primaupload:  primaupload.go
 run:    primaupload
 		./primaupload
 
+foreman:    primaupload
+		foreman start
+
+# create using: heroku create --buildpack git://github.com/kr/heroku-buildpack-go.git
+push:
+		git push -f heroku master
+
 all:    primaupload.go
 
 fmt:

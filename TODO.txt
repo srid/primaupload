@@ -1,12 +1,15 @@
 * goroutine for concurrent upload
 * test in ie7 (work)
 * 404/500 page
+* clicking on 'save' should not submit until download is complete
+* heroku has no persistent filesystem; use ec2? (with added advantage of scalability)
 
-work log
-===
+# work log
+
 * ajax file upload
 * ajax file upload ie7
 * :-( http://caniuse.com/xhr2
 * better use YUI; iframe hack may take much time
 * go for fun
-* 
+* uuid 
+* heroku
