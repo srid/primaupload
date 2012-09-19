@@ -21,5 +21,11 @@ YUI().use('uploader', function (Y) {
 			Y.one("#overallProgress").setHTML(
 				"Total uploaded: <strong>" + event.percentLoaded + "%</strong");
 		}
+
+		// when upload completes, server sends a uuid for the uploaded file
+		// save this for later submit
+		uploader.on("uploadcomplete", function (event){
+			Y.one("#serverdata").setHTML(event.data)
+		})
 	}
 })

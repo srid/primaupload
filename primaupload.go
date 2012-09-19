@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/nu7hatch/gouuid"
 	"html/template"
 	"io"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		UploadHandler(w, r)
+		return
 	}
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, nil)
@@ -25,8 +27,9 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: use UUID to avoid conflicts, but store title?
-	targetPath := filepath.Join("uploads", handler.Filename)
+	// use a UUID in the filename to avoid conflicts
+	id, _ := uuid.NewV4()
+	targetPath := filepath.Join("uploads", fmt.Sprintf("%s-%s", id, handler.Filename))
 
 	target, err := os.OpenFile(targetPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -42,6 +45,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Println(err)
 	}
+
+	fmt.Fprintln(w, targetPath)
 }
 
 func ConfigureRoutes() {
