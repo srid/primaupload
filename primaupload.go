@@ -5,6 +5,7 @@ import (
 	"github.com/nu7hatch/gouuid"
 	"html/template"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -21,6 +22,7 @@ func removeUuidFromFilepath(path string) string {
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Request from", r)
 	if r.Method == "POST" {
 		UploadHandler(w, r)
 		return
@@ -33,7 +35,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	yuiUploadKey := "Filedata" // scraped from chrome dev tools
 	file, handler, err := r.FormFile(yuiUploadKey)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
@@ -42,17 +44,17 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	target, err := os.OpenFile(targetPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	defer target.Close()
 
-	fmt.Printf("copying to %s\n", targetPath)
+	log.Printf("copying to %s\n", targetPath)
 	n, err := io.Copy(target, file)
 	if err == nil {
-		fmt.Printf("copied %d bytes to %s\n", n, targetPath)
+		log.Printf("copied %d bytes to %s\n", n, targetPath)
 	} else {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	fmt.Fprintf(w, "/"+targetPath)
@@ -86,8 +88,8 @@ func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
-	} 
+	}
 	addr := fmt.Sprintf("0.0.0.0:%s", port)
-	fmt.Printf("Serving http://%s/\n", addr)
+	log.Printf("Serving http://%s/\n", addr)
 	http.ListenAndServe(addr, nil)
 }
