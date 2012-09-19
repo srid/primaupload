@@ -95,5 +95,5 @@ func main() {
 	}
 	addr := fmt.Sprintf("0.0.0.0:%s", port)
 	log.Printf("Serving http://%s/\n", addr)
-	http.ListenAndServe(addr, nil)
+	log.Fatal(http.ListenAndServe(addr, nil))
 }
