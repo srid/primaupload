@@ -75,6 +75,6 @@ Using S3 for storing uploads will remove local storage as a single point of fail
 
 These are the primary files to begin with if you want to understand the code.
 
-* `web.go` contain the server code.
+* `web.go` contains the server code.
 * `static/upload.js` is the JavaScript code for upload and form management.
 * `index.html, view.html` are the HTML templates.
