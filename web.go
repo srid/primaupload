@@ -104,4 +104,3 @@ func ConfigureRoutes() {
 	http.Handle("/static/", http.StripPrefix("/static", staticHandler))
 	http.Handle("/", router)
 }
-

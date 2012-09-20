@@ -1,10 +1,8 @@
 * test in ie7 (work)
 * 404/500 page
-* heroku has no persistent filesystem; use ec2? (with added advantage of scalability)
-  * what to show after 100% progress? 
-  * need to refactor with goroutines (for ec2 upload)
 * cleanup code
 * write README and publish to github
+* favicon
 
 # work log
 

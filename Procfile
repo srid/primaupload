@@ -1,1 +1,2 @@
 web: primaupload
+weblocal: ./primaupload
