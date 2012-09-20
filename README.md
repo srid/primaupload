@@ -57,6 +57,12 @@ heroku create --buildpack git://github.com/kr/heroku-buildpack-go.git
 git push -f heroku master
 ```
 
+To deploy to [Stackato](http://www.activestate.com/stackato), you would run:
+
+```bash
+stackato push -n --framework buildpack
+```
+
 # Upload conflicts
 
 As two users may upload files with same name, each filename is prepended with an [UUID](http://en.wikipedia.org/wiki/Universally_unique_identifier). 
