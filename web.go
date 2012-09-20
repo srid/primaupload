@@ -26,6 +26,11 @@ func removeUuidFromFilepath(path string) string {
 	return strings.SplitN(filepath.Base(path), "-", 6)[5]
 }
 
+func serverError(w http.ResponseWriter, err error) {
+	log.Printf("error: %s\n", err)
+	http.Error(w, fmt.Sprintf("%s", err), http.StatusInternalServerError)
+}
+
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Request from", r)
 	if r.Method == "POST" {
@@ -39,7 +44,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	file, handler, err := r.FormFile("Filedata")
 	if err != nil {
-		log.Println(err)
+		serverError(w, err)
 		return
 	}
 
@@ -48,7 +53,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	target, err := os.OpenFile(targetPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Println(err)
+		serverError(w, err)
 		return
 	}
 	defer target.Close()
@@ -58,7 +63,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		log.Printf("copied %d bytes to %s\n", n, targetPath)
 	} else {
-		log.Println(err)
+		serverError(w, err)
+		return
 	}
 
 	fmt.Fprintf(w, "/"+targetPath)

@@ -1,5 +1,4 @@
 * test in ie7 (work)
-* 404/500 page
 * cleanup code
 * write README and publish to github
 * favicon

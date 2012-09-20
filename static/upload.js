@@ -92,6 +92,13 @@ YUI().use('uploader', function (Y) {
 			uploadComplete(event.data);
 		})
 
+		// in the event of error, gracefully notify
+		uploader.on("uploaderror", function (event){
+			Y.log('error uploading file');
+			Y.one("#overallProgress").setHTML(
+				"<span style='color: red;'>Error</span> uploading file. Try again, or contact site owner.");
+		})
+
 		// if the user submits already, wait for the upload to be complete
 		form.on('submit', function (event){
 			if (uploading){
