@@ -40,7 +40,7 @@ The site was tested on Chrome 22.0, Firefox 12.0 and IE 8.0.
 
 # Concurrent
 
-Go's http package serves each request in a goroutine, and since goroutines do not block each other, we automatically support concurrent uploads from multiple users.
+Go's http package serves each request in a [goroutine](http://golang.org/src/pkg/net/http/server.go?s=28722:28771#L1042), and since goroutines do not block each other, we automatically support concurrent uploads from multiple users.
 
 # Progressive upload
 
