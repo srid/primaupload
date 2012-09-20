@@ -81,11 +81,20 @@ func fileInfoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func flashCrossDomainFile(w http.ResponseWriter, r *http.Request) {
+	content := `<cross-domain-policy>
+<allow-access-from domain="yui.yahooapis.com" secure="false"/>
+</cross-domain-policy>
+`
+	fmt.Fprintf(w, content)
+}
+
 func configureRoutes() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", homeHandler)
 	router.HandleFunc("/upload", uploadHandler)
 	router.HandleFunc("/view/{filename}", fileInfoHandler)
+	router.HandleFunc("/crossdomain.xml", flashCrossDomainFile)
 
 	// static directory handler
 	staticDir, err := filepath.Abs("./static")
