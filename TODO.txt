@@ -1,14 +1,3 @@
 * test in ie7 (work)
 * cleanup code
 * write README and publish to github
-
-# work log
-
-* ajax file upload
-* ajax file upload ie7
-* :-( http://caniuse.com/xhr2
-* better use YUI; iframe hack may take much time
-* go for fun
-* uuid 
-* heroku
-* similar to soundcloud's upload page

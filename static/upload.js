@@ -1,5 +1,3 @@
-// TODO: setup crossdomain.xml policy file on the server
-
 YUI().use('uploader', function (Y) {
 	Y.log("Detected uploader type:" + Y.Uploader.TYPE);
 	if (Y.Uploader.TYPE != "none") {
