@@ -17,7 +17,7 @@ YUI().use('uploader', function (Y) {
 		var uploading = false;   // is a file being uploaded?
 		var autosubmit = false;  // did the user want to submit the form?
 
-		// clear and initializing state of elements
+		// clear and initialize state of elements
 		function clear(){
 			autosubmit = false;
 			submitBtn.set('value', 'Save');
@@ -28,7 +28,7 @@ YUI().use('uploader', function (Y) {
 			Y.one("#serverdata").hide();
 		}
 
-		// defer form submit and freeze it no more edits are possible.
+		// defer form submit and freeze it so that no more edits are possible.
 		function deferFormSubmit(){
 			autosubmit = true;
 			submitBtn.set('disabled', true);
@@ -37,6 +37,7 @@ YUI().use('uploader', function (Y) {
 			cancelSubmitLink.show();
 		}
 
+		// cancel the above defer.
 		function cancelDeferredFormSubmit(){
 			autosubmit = false;
 			submitBtn.set('disabled', false);
@@ -66,6 +67,7 @@ YUI().use('uploader', function (Y) {
 		uploader.after("fileselect", function (event){
 			clear()
 			uploading = true;
+			Y.log(event.fileList.length)
 			uploader.upload(event.fileList[0], '/upload');
 		})
 
@@ -90,14 +92,14 @@ YUI().use('uploader', function (Y) {
 			uploadComplete(event.data);
 		})
 
-		// in the event of error, gracefully notify
+		// in the event of server error, gracefully notify the user
 		uploader.on("uploaderror", function (event){
 			Y.log('error uploading file');
 			Y.one("#overallProgress").setHTML(
 				"<span style='color: red;'>Error</span> uploading file. Try again, or contact site owner.");
 		})
 
-		// if the user submits already, wait for the upload to be complete
+		// if the user submits the form, wait for the upload to be complete if any
 		form.on('submit', function (event){
 			if (uploading){
 				event.preventDefault();

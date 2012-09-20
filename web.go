@@ -13,8 +13,8 @@ import (
 	"strings"
 )
 
-// maps filename to description
-// ideally, description should be stored in a database
+// each locally stored file has a description entered by the user. we store
+// that here in-memory. ideally, this should live on a database.
 var descriptionMap = map[string]string{}
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -111,10 +111,13 @@ func appendUuidToFilepath(path string) string {
 	return fmt.Sprintf("%s-%s", id, path)
 }
 
+// remove the UUID added by `appendUuidToFilepath`
 func removeUuidFromFilepath(path string) string {
+	// UUID has 4 hyphens, so we split into 6 parts. 
 	return strings.SplitN(filepath.Base(path), "-", 6)[5]
 }
 
+// log the error and respond with 500 http status
 func serverError(w http.ResponseWriter, err error) {
 	log.Printf("error: %s\n", err)
 	http.Error(w, fmt.Sprintf("%s", err), http.StatusInternalServerError)

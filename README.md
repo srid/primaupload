@@ -38,9 +38,9 @@ Internet Explorer versions upto 9.0 [do not support](http://caniuse.com/xhr2) XM
 
 The site was tested on Chrome 22.0, Firefox 12.0 and IE 8.0.
 
-# Concurrent
+# Concurrent requests
 
-Go's http package serves each request in a [goroutine](http://golang.org/src/pkg/net/http/server.go?s=28722:28771#L1042), and since goroutines do not block each other, we automatically support concurrent uploads from multiple users.
+Go's http package serves each request in a [goroutine](http://golang.org/src/pkg/net/http/server.go?s=28722:28771#L1042), and since goroutines do not block each other, we automatically support concurrent uploads from multiple users. This was verified manually and also using ApacheBench ([~500 requests/second](https://gist.github.com/3753557)).
 
 # Progressive upload
 
