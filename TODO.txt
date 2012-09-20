@@ -1,7 +1,6 @@
 * test in ie7 (work)
 * cleanup code
 * write README and publish to github
-* favicon
 
 # work log
 

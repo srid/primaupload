@@ -1,4 +1,4 @@
-primaupload:  main.go web.go
+primaupload:  web.go
 		go build -o primaupload
 
 run:    primaupload

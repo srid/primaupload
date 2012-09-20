@@ -17,31 +17,17 @@ import (
 // ideally, description should be stored in a database
 var descriptionMap = map[string]string{}
 
-func appendUuidToFilepath(path string) string {
-	id, _ := uuid.NewV4()
-	return fmt.Sprintf("%s-%s", id, path)
-}
-
-func removeUuidFromFilepath(path string) string {
-	return strings.SplitN(filepath.Base(path), "-", 6)[5]
-}
-
-func serverError(w http.ResponseWriter, err error) {
-	log.Printf("error: %s\n", err)
-	http.Error(w, fmt.Sprintf("%s", err), http.StatusInternalServerError)
-}
-
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
+func homeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Request from", r)
 	if r.Method == "POST" {
-		SaveHandler(w, r)
+		saveHandler(w, r)
 		return
 	}
 	t := template.Must(template.ParseFiles("index.html"))
 	t.Execute(w, nil)
 }
 
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	file, handler, err := r.FormFile("Filedata")
 	if err != nil {
 		serverError(w, err)
@@ -70,7 +56,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "/"+targetPath)
 }
 
-func SaveHandler(w http.ResponseWriter, r *http.Request) {
+func saveHandler(w http.ResponseWriter, r *http.Request) {
 	path := filepath.Base(r.FormValue("savedfile"))
 	description := r.FormValue("description")
 	if path == "" {
@@ -81,7 +67,7 @@ func SaveHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/view/"+path, http.StatusFound)
 }
 
-func FileInfoHandler(w http.ResponseWriter, r *http.Request) {
+func fileInfoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	filename := vars["filename"]
 	if desc, ok := descriptionMap[filename]; ok {
@@ -95,11 +81,11 @@ func FileInfoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ConfigureRoutes() {
+func configureRoutes() {
 	router := mux.NewRouter()
-	router.HandleFunc("/", HomeHandler)
-	router.HandleFunc("/upload", UploadHandler)
-	router.HandleFunc("/view/{filename}", FileInfoHandler)
+	router.HandleFunc("/", homeHandler)
+	router.HandleFunc("/upload", uploadHandler)
+	router.HandleFunc("/view/{filename}", fileInfoHandler)
 
 	// static directory handler
 	staticDir, err := filepath.Abs("./static")
@@ -109,4 +95,29 @@ func ConfigureRoutes() {
 	staticHandler := http.FileServer(http.Dir(staticDir))
 	http.Handle("/static/", http.StripPrefix("/static", staticHandler))
 	http.Handle("/", router)
+}
+
+func appendUuidToFilepath(path string) string {
+	id, _ := uuid.NewV4()
+	return fmt.Sprintf("%s-%s", id, path)
+}
+
+func removeUuidFromFilepath(path string) string {
+	return strings.SplitN(filepath.Base(path), "-", 6)[5]
+}
+
+func serverError(w http.ResponseWriter, err error) {
+	log.Printf("error: %s\n", err)
+	http.Error(w, fmt.Sprintf("%s", err), http.StatusInternalServerError)
+}
+
+func main() {
+	configureRoutes()
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	addr := fmt.Sprintf("0.0.0.0:%s", port)
+	log.Printf("Serving http://%s/\n", addr)
+	log.Fatal(http.ListenAndServe(addr, nil))
 }
